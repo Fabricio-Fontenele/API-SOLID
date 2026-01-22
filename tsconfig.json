@@ -20,8 +20,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*", "./test/*"],
-      "@prisma/*": ["./generated/prisma/*"]
+      "@/*": ["./src/*", "./test/*"]
     }
   },
   "include": ["./*.ts", "./src/**/*.ts", "./test/**/*.ts", "./types/**/*.d.ts"],
