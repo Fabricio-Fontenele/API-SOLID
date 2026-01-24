@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "lint:clear": "rm -f .eslintcache",
     "lint:fix": "yarn run lint --fix",
-    "test": "vitest"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [],
   "author": "Eyder Rios",
@@ -52,6 +53,7 @@
     "tsup": "8.5.1",
     "typescript": "5",
     "typescript-transform-paths": "3",
+    "vite-tsconfig-paths": "6.0.5",
     "vitest": "4.0.17"
   }
 }
