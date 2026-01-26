@@ -11,7 +11,9 @@
     "lint:clear": "rm -f .eslintcache",
     "lint:fix": "yarn run lint --fix",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui"
   },
   "keywords": [],
   "author": "Eyder Rios",
@@ -35,6 +37,8 @@
     "@types/supertest": "6.0.3",
     "@typescript-eslint/eslint-plugin": "8",
     "@typescript-eslint/parser": "8",
+    "@vitest/coverage-v8": "4.0.17",
+    "@vitest/ui": "4.0.17",
     "eslint": "8.57.1",
     "eslint-config-prettier": "9",
     "eslint-import-resolver-typescript": "3",
