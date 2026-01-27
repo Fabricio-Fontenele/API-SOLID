@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { CheckInService } from './checkin.service'
+import { CheckInUseCase } from './checkin'
 import { InMemoryCheckInsRepository } from '@/repositories/in-memory/in-memory-checkins-repository'
 
 let checkInRepository: InMemoryCheckInsRepository
-let sut: CheckInService
+let sut: CheckInUseCase
 
 describe('Check-in Use Case', () => {
   beforeEach(() => {
     checkInRepository = new InMemoryCheckInsRepository()
-    sut = new CheckInService(checkInRepository)
+    sut = new CheckInUseCase(checkInRepository)
   })
   it('should be able to check in', async () => {
     const { checkIn } = await sut.execute({
