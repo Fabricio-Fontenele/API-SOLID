@@ -96,7 +96,7 @@ src/
 ├── http/
 │   ├── controllers/     # Controladores das rotas
 │   └── routes.ts        # Definição das rotas
-├── services/            # Lógica de negócio
+├── use-cases/            # Casos de uso da aplicação
 ├── lib/                 # Configurações de bibliotecas
 ├── env/                 # Validação de variáveis de ambiente
 ├── app.ts              # Configuração do Fastify
