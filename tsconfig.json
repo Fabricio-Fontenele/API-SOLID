@@ -23,6 +23,13 @@
       "@/*": ["./src/*", "./test/*"]
     }
   },
-  "include": ["./*.ts", "./src/**/*.ts", "./test/**/*.ts", "./types/**/*.d.ts"],
+  "include": [
+    "./*.ts",
+    "./src/**/*.ts",
+    "./test/**/*.ts",
+    "./prisma/**/*.ts",
+    "./types/**/*.d.ts",
+    "vite.config.mjs"
+  ],
   "exclude": ["./build", "./node_modules", "./tsconfig.json"]
 }
