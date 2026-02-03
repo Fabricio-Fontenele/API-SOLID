@@ -10,8 +10,9 @@
     "lint": "eslint .",
     "lint:clear": "rm -f .eslintcache",
     "lint:fix": "yarn run lint --fix",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "test": "vitest run --project unit",
+    "test:e2e": "vitest run --project e2e",
+    "test:watch": "vitest run --project unit",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui"
   },
@@ -59,6 +60,7 @@
     "tsup": "8.5.1",
     "typescript": "5",
     "typescript-transform-paths": "3",
+    "vite": "7.3.1",
     "vite-tsconfig-paths": "6.0.5",
     "vitest": "4.0.17"
   }
