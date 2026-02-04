@@ -1,17 +1,18 @@
 import 'dotenv/config'
 import { PrismaClient } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
 import { env } from '@/env'
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient }
+const connectionString = process.env.DATABASE_URL || env.DATABASE_URL
+const url = new URL(connectionString)
+const schema = url.searchParams.get('schema') || 'public'
 
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    adapter: new PrismaPg({
-      connectionString: env.DATABASE_URL,
-    }),
-    log: ['query', 'error'],
-  })
+url.searchParams.delete('schema')
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+const pool = new Pool({ connectionString: url.toString() })
+
+export const prisma = new PrismaClient({
+  adapter: new PrismaPg(pool, { schema }),
+  log: env.NODE_ENV === 'dev' ? ['query', 'error'] : [],
+})

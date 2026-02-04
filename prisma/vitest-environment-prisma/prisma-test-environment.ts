@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { PrismaClient } from '@prisma/client'
 import 'dotenv/config'
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
@@ -29,11 +29,13 @@ export default <Environment>{
 
     return {
       async teardown() {
+        const prisma = new PrismaClient()
+
         await prisma.$executeRawUnsafe(
-          `DROP SCHEMA IF EXIST "${schema}" CASCADE`,
+          `DROP SCHEMA IF EXISTS "${schema}" CASCADE`,
         )
 
-        await prisma.$disconnect
+        await prisma.$disconnect()
       },
     }
   },
