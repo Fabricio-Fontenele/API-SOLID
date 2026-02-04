@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
 import 'dotenv/config'
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
@@ -29,7 +31,14 @@ export default <Environment>{
 
     return {
       async teardown() {
-        const prisma = new PrismaClient()
+        const url = new URL(process.env.DATABASE_URL!)
+        const schemaName = url.searchParams.get('schema')
+        url.searchParams.delete('schema')
+
+        const pool = new Pool({ connectionString: url.toString() })
+        const prisma = new PrismaClient({
+          adapter: new PrismaPg(pool, { schema: schemaName || 'public' }),
+        })
 
         await prisma.$executeRawUnsafe(
           `DROP SCHEMA IF EXISTS "${schema}" CASCADE`,
