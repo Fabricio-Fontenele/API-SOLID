@@ -93,14 +93,23 @@ npm run lint:fix     # Corrige problemas automaticamente
 
 ```
 src/
+├── @types/              # Definições de tipos TypeScript
 ├── http/
-│   ├── controllers/     # Controladores das rotas
-│   └── routes.ts        # Definição das rotas
-├── use-cases/            # Casos de uso da aplicação
-├── lib/                 # Configurações de bibliotecas
-├── env/                 # Validação de variáveis de ambiente
-├── app.ts              # Configuração do Fastify
-└── server.ts           # Inicialização do servidor
+│   ├── controllers/     # Controladores organizados por domínio
+│   │   ├── gyms/       # Controllers de academias
+│   │   └── users/      # Controllers de usuários
+│   └── middlewares/    # Middlewares (autenticação, etc)
+├── use-cases/          # Casos de uso da aplicação (regras de negócio)
+│   ├── errors/         # Erros customizados dos casos de uso
+│   └── factories/      # Factories para instanciar casos de uso
+├── repositories/       # Interfaces e implementações de repositórios
+│   ├── in-memory/     # Repositórios em memória (para testes)
+│   └── prisma/        # Repositórios com Prisma (produção)
+├── lib/               # Configurações de bibliotecas externas
+├── env/               # Validação de variáveis de ambiente
+├── utils/             # Funções utilitárias
+├── app.ts            # Configuração do Fastify
+└── server.ts         # Inicialização do servidor
 ```
 
 ## 🗃️ Modelo de Dados
