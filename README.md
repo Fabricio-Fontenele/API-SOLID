@@ -9,12 +9,24 @@
     <img alt="Fastify" src="https://img.shields.io/badge/Fastify-5.7-black?logo=fastify" />
     <img alt="Prisma" src="https://img.shields.io/badge/Prisma-7.1-2D3748?logo=prisma" />
     <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-16-316192?logo=postgresql" />
+    <img alt="Tests" src="https://github.com/Fabricio-Fontenele/API-SOLID/actions/workflows/run-unit-tests.yml/badge.svg" />
   </p>
 </div>
 
 ## 📋 Sobre o Projeto
 
 Este projeto é uma aplicação inspirada no GymPass, desenvolvida durante o curso da RocketSeat. A API permite que usuários façam check-ins em academias, com validação de distância e regras de negócio específicas para garantir a integridade dos dados.
+
+### ✨ Funcionalidades Principais
+
+- 🔐 Autenticação JWT com refresh token
+- 👥 Sistema de roles (ADMIN/MEMBER)
+- 📍 Busca de academias por proximidade (geolocalização)
+- ✅ Sistema de check-ins com validação de distância
+- 📊 Métricas e histórico de check-ins
+- 🧪 Cobertura completa de testes (unitários + E2E)
+- 🏗️ Arquitetura em camadas (SOLID principles)
+- 🐳 Docker para desenvolvimento
 
 ## 🚀 Tecnologias
 
@@ -25,19 +37,24 @@ Este projeto é uma aplicação inspirada no GymPass, desenvolvida durante o cur
 - **PostgreSQL** - Banco de dados relacional
 - **Zod** - Validação de schemas e tipos
 - **bcryptjs** - Hash de senhas
+- **JWT** - Autenticação via JSON Web Tokens
 - **Docker** - Containerização da aplicação
+- **Vitest** - Framework de testes unitários e E2E
+- **Supertest** - Testes de API HTTP
 
 ## 📦 Instalação
 
 ```bash
 # Clonar o repositório
 git clone <url-do-repositorio>
+cd api-solid
 
 # Instalar dependências
 npm install
 
 # Configurar variáveis de ambiente
 cp .env.example .env
+# Edite o arquivo .env com suas configurações
 
 # Subir o banco de dados com Docker
 docker-compose up -d
@@ -45,19 +62,48 @@ docker-compose up -d
 # Executar migrations
 npx prisma migrate dev
 
+# Gerar Prisma Client
+npx prisma generate
+
 # Iniciar servidor de desenvolvimento
 npm run dev
 ```
 
+> **🚀 Servidor rodando em:** `http://localhost:3333`
+
+## ⚙️ Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```env
+NODE_ENV=dev
+PORT=3333
+DATABASE_URL="postgresql://docker:docker@localhost:5432/apisolid?schema=public"
+JWT_SECRET="sua-chave-secreta-super-segura"
+```
+
+| Variável | Descrição | Padrão |
+|----------|-----------|--------|
+| `NODE_ENV` | Ambiente de execução (`dev`, `test`, `production`) | `dev` |
+| `PORT` | Porta do servidor | `3333` |
+| `DATABASE_URL` | URL de conexão do PostgreSQL | - |
+| `JWT_SECRET` | Chave secreta para assinar tokens JWT | - |
+
 ## 🔧 Scripts Disponíveis
 
 ```bash
-npm run dev          # Inicia o servidor em modo desenvolvimento
-npm run build        # Compila o projeto para produção
-npm run start        # Inicia o servidor em modo produção
-npm run test         # Executa os testes
-npm run lint         # Verifica problemas no código
-npm run lint:fix     # Corrige problemas automaticamente
+npm run dev             # Inicia o servidor em modo desenvolvimento
+npm run build           # Compila o projeto para produção
+npm run start           # Inicia o servidor em modo produção
+
+npm run test            # Executa os testes unitários
+npm run test:watch      # Executa os testes em modo watch
+npm run test:e2e        # Executa os testes E2E (end-to-end)
+npm run test:coverage   # Gera relatório de cobertura de testes
+npm run test:ui         # Abre interface UI do Vitest
+
+npm run lint            # Verifica problemas no código
+npm run lint:fix        # Corrige problemas automaticamente
 ```
 
 ## 📝 Requisitos Funcionais (RFs)
@@ -79,8 +125,8 @@ npm run lint:fix     # Corrige problemas automaticamente
 - [x] O usuário não pode fazer 2 check-ins no mesmo dia
 - [x] O usuário não pode fazer check-in se não estiver perto (100m) da academia
 - [x] O check-in só pode ser validado até 20 minutos após criado
-- [ ] O check-in só pode ser validado por administradores
-- [ ] A academia só pode ser cadastrada por administradores
+- [x] O check-in só pode ser validado por administradores
+- [x] A academia só pode ser cadastrada por administradores
 
 ## 🔒 Requisitos Não-Funcionais (RNFs)
 
@@ -89,6 +135,112 @@ npm run lint:fix     # Corrige problemas automaticamente
 - [x] Todas as listas de dados precisam estar paginadas com 20 itens por página
 - [x] O usuário deve ser identificado por um JWT (JSON Web Token)
 
+## 🔐 Autenticação e Permissões
+
+A API utiliza **JWT (JSON Web Token)** para autenticação. Após o login, você receberá dois tokens:
+
+- **Access Token**: Usado nas requisições (válido por 10 minutos)
+- **Refresh Token**: Usado para renovar o access token (válido por 7 dias)
+
+### Roles de Usuário
+
+- **MEMBER**: Usuário comum (padrão)
+- **ADMIN**: Administrador (pode validar check-ins e cadastrar academias)
+
+### Como usar o token
+
+Adicione o token no header de todas as requisições protegidas:
+
+```bash
+Authorization: Bearer <seu-access-token>
+```
+
+## 📡 Endpoints da API
+
+### 👤 Usuários
+
+| Método | Endpoint | Descrição | Autenticação |
+|--------|----------|-----------|--------------|
+| `POST` | `/users` | Cadastrar novo usuário | ❌ |
+| `POST` | `/sessions` | Autenticar usuário | ❌ |
+| `PATCH` | `/token/refresh` | Renovar access token | ❌ |
+| `GET` | `/me` | Obter perfil do usuário logado | ✅ |
+
+### 🏋️ Academias
+
+| Método | Endpoint | Descrição | Autenticação | Role |
+|--------|----------|-----------|--------------|------|
+| `POST` | `/gyms` | Cadastrar academia | ✅ | ADMIN |
+| `GET` | `/gyms/search` | Buscar academias por nome | ✅ | - |
+| `GET` | `/gyms/nearby` | Buscar academias próximas | ✅ | - |
+
+### ✅ Check-ins
+
+| Método | Endpoint | Descrição | Autenticação | Role |
+|--------|----------|-----------|--------------|------|
+| `POST` | `/gyms/:gymId/check-ins` | Fazer check-in em uma academia | ✅ | - |
+| `PATCH` | `/check-ins/:checkInId/validate` | Validar check-in | ✅ | ADMIN |
+| `GET` | `/check-ins/history` | Histórico de check-ins do usuário | ✅ | - |
+| `GET` | `/check-ins/metrics` | Métricas (total de check-ins) | ✅ | - |
+
+<details>
+<summary>📋 Exemplos de Requisições</summary>
+
+### Cadastrar Usuário
+
+```bash
+POST /users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "123456"
+}
+```
+
+### Autenticar
+
+```bash
+POST /sessions
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "123456"
+}
+```
+
+**Resposta:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+### Buscar Academias Próximas
+
+```bash
+GET /gyms/nearby?latitude=-23.5505&longitude=-46.6333
+Authorization: Bearer <token>
+```
+
+### Fazer Check-in
+
+```bash
+POST /gyms/550e8400-e29b-41d4-a716-446655440000/check-ins
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "latitude": -23.5505,
+  "longitude": -46.6333
+}
+```
+
+</details>
+
 ## 🏗️ Estrutura do Projeto
 
 ```
@@ -96,9 +248,10 @@ src/
 ├── @types/              # Definições de tipos TypeScript
 ├── http/
 │   ├── controllers/     # Controladores organizados por domínio
+│   │   ├── check-ins/  # Controllers de check-ins
 │   │   ├── gyms/       # Controllers de academias
 │   │   └── users/      # Controllers de usuários
-│   └── middlewares/    # Middlewares (autenticação, etc)
+│   └── middlewares/    # Middlewares (autenticação, autorização)
 ├── use-cases/          # Casos de uso da aplicação (regras de negócio)
 │   ├── errors/         # Erros customizados dos casos de uso
 │   └── factories/      # Factories para instanciar casos de uso
@@ -106,8 +259,8 @@ src/
 │   ├── in-memory/     # Repositórios em memória (para testes)
 │   └── prisma/        # Repositórios com Prisma (produção)
 ├── lib/               # Configurações de bibliotecas externas
-├── env/               # Validação de variáveis de ambiente
-├── utils/             # Funções utilitárias
+├── env/               # Validação de variáveis de ambiente (Zod)
+├── utils/             # Funções utilitárias (cálculo de distância, etc)
 ├── app.ts            # Configuração do Fastify
 └── server.ts         # Inicialização do servidor
 ```
@@ -115,32 +268,79 @@ src/
 ## 🗃️ Modelo de Dados
 
 ### User
-
-- id
-- name
-- email
-- password_hash
-- created_at
+- `id` - UUID
+- `name` - String
+- `email` - String (único)
+- `password_hash` - String
+- `role` - Enum (ADMIN, MEMBER)
+- `created_at` - DateTime
 
 ### Gym
-
-- id
-- title
-- description
-- phone
-- latitude
-- longitude
+- `id` - UUID
+- `title` - String
+- `description` - String (opcional)
+- `phone` - String (opcional)
+- `latitude` - Decimal
+- `longitude` - Decimal
 
 ### CheckIn
+- `id` - UUID
+- `created_at` - DateTime
+- `validated_at` - DateTime (opcional)
+- `user_id` - UUID (FK → User)
+- `gym_id` - UUID (FK → Gym)
 
-- id
-- created_at
-- validated_at
-- user_id
-- gym_id
+## 🧪 Testes
+
+O projeto possui cobertura de testes unitários e E2E:
+
+- **Testes Unitários**: Testam os casos de uso isoladamente usando repositórios in-memory
+- **Testes E2E**: Testam os endpoints da API com banco de dados real
+
+```bash
+# Rodar testes unitários
+npm run test
+
+# Rodar testes E2E (requer Docker)
+npm run test:e2e
+
+# Ver cobertura de testes
+npm run test:coverage
+
+# Modo watch para desenvolvimento
+npm run test:watch
+
+# Interface visual do Vitest
+npm run test:ui
+```
+
+## 🐳 Docker
+
+O projeto utiliza Docker Compose para subir o PostgreSQL:
+
+```bash
+# Subir o banco de dados
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f
+
+# Parar o banco
+docker-compose down
+
+# Parar e remover volumes (limpa o banco)
+docker-compose down -v
+```
 
 ## 📄 Licença
 
 Este projeto está sob a licença MIT.
 
 ---
+
+<div align="center">
+  <p>Desenvolvido com ❤️ durante o curso da RocketSeat</p>
+  <p>
+    <a href="#top">⬆️ Voltar ao topo</a>
+  </p>
+</div>
