@@ -1,11 +1,11 @@
 import fastify from 'fastify'
 import fastifyCookie from '@fastify/cookie'
 import { ZodError } from 'zod'
-import { env } from './env'
+import { env } from './infra/env'
 import fastifyJwt from '@fastify/jwt'
-import { usersRoutes } from './http/controllers/users/routes'
-import { gymsRoutes } from './http/controllers/gyms/routes'
-import { checkInsRoutes } from './http/controllers/check-ins/routes'
+import { usersRoutes } from './infra/http/controllers/users/routes'
+import { gymsRoutes } from './infra/http/controllers/gyms/routes'
+import { checkInsRoutes } from './infra/http/controllers/check-ins/routes'
 
 export const app = fastify()
 
