@@ -15,7 +15,7 @@
 
 ## 📋 Sobre o Projeto
 
-Este projeto é uma aplicação inspirada no GymPass, desenvolvida durante o curso da RocketSeat. A API permite que usuários façam check-ins em academias, com validação de distância e regras de negócio específicas para garantir a integridade dos dados.
+Este projeto é uma aplicação inspirada no GymPass. A API permite que usuários façam check-ins em academias, com validação de distância e regras de negócio específicas para garantir a integridade dos dados.
 
 ### ✨ Funcionalidades Principais
 
@@ -46,7 +46,7 @@ Este projeto é uma aplicação inspirada no GymPass, desenvolvida durante o cur
 
 ```bash
 # Clonar o repositório
-git clone <url-do-repositorio>
+git clone [<url-do-repositorio>](https://github.com/Fabricio-Fontenele/API-SOLID.git)
 cd api-solid
 
 # Instalar dependências
@@ -244,25 +244,40 @@ Content-Type: application/json
 ## 🏗️ Estrutura do Projeto
 
 ```
-src/
-├── @types/              # Definições de tipos TypeScript
-├── http/
-│   ├── controllers/     # Controladores organizados por domínio
-│   │   ├── check-ins/  # Controllers de check-ins
-│   │   ├── gyms/       # Controllers de academias
-│   │   └── users/      # Controllers de usuários
-│   └── middlewares/    # Middlewares (autenticação, autorização)
-├── use-cases/          # Casos de uso da aplicação (regras de negócio)
-│   ├── errors/         # Erros customizados dos casos de uso
-│   └── factories/      # Factories para instanciar casos de uso
-├── repositories/       # Interfaces e implementações de repositórios
-│   ├── in-memory/     # Repositórios em memória (para testes)
-│   └── prisma/        # Repositórios com Prisma (produção)
-├── lib/               # Configurações de bibliotecas externas
-├── env/               # Validação de variáveis de ambiente (Zod)
-├── utils/             # Funções utilitárias (cálculo de distância, etc)
-├── app.ts            # Configuração do Fastify
-└── server.ts         # Inicialização do servidor
+.
+├── prisma/
+│   ├── migrations/                       # Histórico de migrations do banco
+│   ├── vitest-environment-prisma/        # Ambiente Prisma para testes E2E
+│   └── schema.prisma                     # Schema do banco de dados
+├── src/
+│   ├── @types/                           # Definições de tipos TypeScript
+│   ├── application/
+│   │   ├── repositories/                 # Contratos dos repositórios
+│   │   │   └── dtos/                     # DTOs usados pelos contratos
+│   │   ├── use-cases/                    # Casos de uso e regras de negócio
+│   │   │   └── errors/                   # Erros customizados dos casos de uso
+│   │   └── get-distance-between-coordinates.ts
+│   ├── domain/
+│   │   └── entities/                     # Entidades de domínio
+│   ├── infra/
+│   │   ├── database/
+│   │   │   ├── in-memory/                # Repositórios em memória para testes
+│   │   │   └── prisma/                   # Cliente Prisma e repositórios reais
+│   │   ├── env/                          # Validação de variáveis de ambiente
+│   │   ├── factories/                    # Factories para instanciar casos de uso
+│   │   ├── http/
+│   │   │   ├── controllers/              # Controllers organizados por domínio
+│   │   │   │   ├── check-ins/
+│   │   │   │   ├── gyms/
+│   │   │   │   └── users/
+│   │   │   └── middlewares/              # Middlewares de autenticação e autorização
+│   │   ├── lib/                          # Configurações de bibliotecas externas
+│   │   └── utils/                        # Utilitários de infraestrutura e testes
+│   ├── app.ts                            # Configuração do Fastify
+│   └── server.ts                         # Inicialização do servidor
+├── docker-compose.yml                    # Banco PostgreSQL para desenvolvimento
+├── prisma.config.ts                      # Configuração do Prisma
+└── vite.config.mjs                       # Configuração dos testes
 ```
 
 ## 🗃️ Modelo de Dados
@@ -339,7 +354,6 @@ Este projeto está sob a licença MIT.
 ---
 
 <div align="center">
-  <p>Desenvolvido com ❤️ durante o curso da RocketSeat</p>
   <p>
     <a href="#top">⬆️ Voltar ao topo</a>
   </p>
