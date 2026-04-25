@@ -27,6 +27,8 @@ jobs:
       - run: npm install
 
       - run: npx prisma generate
+        env:
+          DATABASE_URL: 'postgresql://docker:docker@localhost:5432/apisolid?schema=public'
 
       - run: npx prisma migrate deploy
         env:
