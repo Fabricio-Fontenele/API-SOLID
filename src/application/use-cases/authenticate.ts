@@ -1,6 +1,6 @@
+import { HashProvider } from '@/application/cryptography/hash-provider'
 import { UsersRepository } from '@/application/repositories/users-repository'
 import { InvalidCredentialsError } from './errors/invalid-credentials-error'
-import { compare } from 'bcryptjs'
 import { User } from '@/domain/entities/user'
 
 interface AuthenticateUseCaseRequest {
@@ -13,7 +13,10 @@ interface AuthenticateUseCaseResponse {
 }
 
 export class AuthenticateUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private hashProvider: HashProvider,
+  ) {}
 
   async execute({
     email,
@@ -25,7 +28,10 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    const doesPasswordMatches = await compare(password, user.password_hash)
+    const doesPasswordMatches = await this.hashProvider.compare(
+      password,
+      user.passwordHash,
+    )
 
     if (!doesPasswordMatches) {
       throw new InvalidCredentialsError()

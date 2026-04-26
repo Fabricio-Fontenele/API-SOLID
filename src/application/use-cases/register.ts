@@ -1,5 +1,5 @@
+import { HashProvider } from '@/application/cryptography/hash-provider'
 import { UsersRepository } from '@/application/repositories/users-repository'
-import { hash } from 'bcryptjs'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { User } from '@/domain/entities/user'
 
@@ -14,14 +14,17 @@ interface RegisterUseCaseResponse {
 }
 
 export class RegisterUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private hashProvider: HashProvider,
+  ) {}
 
   async execute({
     name,
     email,
     password,
   }: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
-    const password_hash = await hash(password, 6)
+    const passwordHash = await this.hashProvider.hash(password)
 
     const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
@@ -32,7 +35,7 @@ export class RegisterUseCase {
     const user = await this.usersRepository.create({
       name,
       email,
-      password_hash,
+      passwordHash,
     })
 
     return {

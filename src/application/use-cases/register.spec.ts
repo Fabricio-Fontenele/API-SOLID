@@ -1,16 +1,18 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { RegisterUseCase } from './register'
-import { compare } from 'bcryptjs'
 import { InMemoryUsersRepository } from '@/infra/database/in-memory/in-memory-users-repository'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
+import { FakeHashProvider } from '@/cryptography/fake-hash-provider'
 
 let usersRepository: InMemoryUsersRepository
+let hashProvider: FakeHashProvider
 let sut: RegisterUseCase
 
 describe('Register Use Case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    sut = new RegisterUseCase(usersRepository)
+    hashProvider = new FakeHashProvider()
+    sut = new RegisterUseCase(usersRepository, hashProvider)
   })
 
   it('should be able to register', async () => {
@@ -30,12 +32,7 @@ describe('Register Use Case', () => {
       password: '123456',
     })
 
-    const isPasswordCorrectleHashed = await compare(
-      '123456',
-      user.password_hash,
-    )
-
-    expect(isPasswordCorrectleHashed).toBe(true)
+    expect(user.passwordHash).toEqual('hashed:123456')
   })
 
   it('should not be able to register with same email twice', async () => {

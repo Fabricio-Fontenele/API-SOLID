@@ -2,22 +2,24 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { InMemoryUsersRepository } from '@/infra/database/in-memory/in-memory-users-repository'
 import { AuthenticateUseCase } from './authenticate'
-import { hash } from 'bcryptjs'
 import { InvalidCredentialsError } from './errors/invalid-credentials-error'
+import { FakeHashProvider } from '@/cryptography/fake-hash-provider'
 
 let usersRepository: InMemoryUsersRepository
+let hashProvider: FakeHashProvider
 let sut: AuthenticateUseCase
 
 describe('Authenticate Use Case', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    sut = new AuthenticateUseCase(usersRepository)
+    hashProvider = new FakeHashProvider()
+    sut = new AuthenticateUseCase(usersRepository, hashProvider)
   })
   it('should be able to authenticate', async () => {
     await usersRepository.create({
       name: 'john Doe',
       email: 'johndoe@example.com',
-      password_hash: await hash('123456', 6),
+      passwordHash: await hashProvider.hash('123456'),
     })
 
     const { user } = await sut.execute({
@@ -41,7 +43,7 @@ describe('Authenticate Use Case', () => {
     await usersRepository.create({
       name: 'john Doe',
       email: 'johndoe@example.com',
-      password_hash: await hash('123456', 6),
+      passwordHash: await hashProvider.hash('123456'),
     })
 
     await expect(() =>
