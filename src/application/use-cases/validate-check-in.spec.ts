@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { InMemoryCheckInsRepository } from '@/infra/database/in-memory/in-memory-checkins-repository'
+import { InMemoryCheckInsRepository } from '@/repositories/in-memory-check-ins-repository'
 import { ValidateCheckInUseCase } from './validate-check-in'
 import { LateCheckInValidationError } from './errors/late-check-in-validation-error'
 

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { InMemoryUsersRepository } from '@/infra/database/in-memory/in-memory-users-repository'
+import { InMemoryUsersRepository } from '@/repositories/in-memory-users-repository'
 
 import { GetUserProfileUseCase } from './get-user-profile'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'

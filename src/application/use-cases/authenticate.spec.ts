@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { InMemoryUsersRepository } from '@/infra/database/in-memory/in-memory-users-repository'
+import { InMemoryUsersRepository } from '@/repositories/in-memory-users-repository'
 import { AuthenticateUseCase } from './authenticate'
 import { InvalidCredentialsError } from './errors/invalid-credentials-error'
 import { FakeHashProvider } from '@/cryptography/fake-hash-provider'
