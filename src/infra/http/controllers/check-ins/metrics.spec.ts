@@ -26,7 +26,7 @@ describe('Check-in Metrics (e2e)', () => {
       },
     })
 
-    const checkIns = await prisma.checkIn.createMany({
+    await prisma.checkIn.createMany({
       data: [
         {
           gym_id: gym.id,

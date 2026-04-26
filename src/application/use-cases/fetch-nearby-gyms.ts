@@ -1,5 +1,6 @@
 import { Gym } from '@/domain/entities/gym'
 import { GymsRepository } from '@/application/repositories/gyms-repository'
+import { MAX_NEARBY_GYM_DISTANCE_IN_KILOMETERS } from '@/application/constants'
 
 interface FetchNearbyGymsUseCaseRequest {
   userLatitude: number
@@ -20,6 +21,7 @@ export class FetchNearbyGymsUseCase {
     const gyms = await this.gymsRepository.findManyNearby({
       latitude: userLatitude,
       longitude: userLongitude,
+      maxDistanceInKilometers: MAX_NEARBY_GYM_DISTANCE_IN_KILOMETERS,
     })
 
     return {

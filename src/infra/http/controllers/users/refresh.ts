@@ -1,5 +1,4 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import z from 'zod'
 
 export async function refresh(request: FastifyRequest, reply: FastifyReply) {
   await request.jwtVerify({ onlyCookie: true })

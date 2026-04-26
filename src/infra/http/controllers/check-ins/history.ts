@@ -1,4 +1,5 @@
 import { makeFetchUserCheckInsHistoryUseCase } from '@/infra/factories/make-fetch-user-check-ins-history-use-case'
+import { CheckInPresenter } from '@/infra/http/presenters/check-in-presenter'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import z from 'zod'
 
@@ -17,6 +18,6 @@ export async function history(request: FastifyRequest, reply: FastifyReply) {
   })
 
   reply.status(200).send({
-    checkIns,
+    checkIns: checkIns.map(CheckInPresenter.toHTTP),
   })
 }

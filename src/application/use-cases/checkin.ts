@@ -5,6 +5,7 @@ import { ResourceNotFoundError } from './errors/resource-not-found-error'
 import { getDistanceBetweenCoordinates } from '@/application/get-distance-between-coordinates'
 import { MaxDistanceError } from './errors/max-distance-error'
 import { MaxNumberOfCheckInsError } from './errors/max-number-of-check-ins-error'
+import { MAX_CHECK_IN_DISTANCE_IN_KILOMETERS } from '@/application/constants'
 
 interface CheckInUseCaseRequest {
   userId: string
@@ -46,9 +47,7 @@ export class CheckInUseCase {
       },
     )
 
-    const MAX_DISTANCE_IN_KILOMETERS = 0.1
-
-    if (distance > MAX_DISTANCE_IN_KILOMETERS) {
+    if (distance > MAX_CHECK_IN_DISTANCE_IN_KILOMETERS) {
       throw new MaxDistanceError()
     }
 
@@ -62,8 +61,8 @@ export class CheckInUseCase {
     }
 
     const checkIn = await this.checkInRepository.create({
-      gym_id: gymId,
-      user_id: userId,
+      gymId,
+      userId,
     })
 
     return { checkIn }

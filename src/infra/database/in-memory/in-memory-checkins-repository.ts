@@ -21,11 +21,11 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     const endOfTheDay = dayjs(date).endOf('date')
 
     const checkOnSameDate = this.items.find((checkIn) => {
-      const checkInDate = dayjs(checkIn.created_at)
+      const checkInDate = dayjs(checkIn.createdAt)
       const isOnSameDate =
         checkInDate.isAfter(startOfTheDay) && checkInDate.isBefore(endOfTheDay)
 
-      return checkIn.user_id === userId && isOnSameDate
+      return checkIn.userId === userId && isOnSameDate
     })
 
     if (!checkOnSameDate) {
@@ -35,23 +35,23 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     return checkOnSameDate
   }
 
-  async findManyByUserId(userId: string, page: number) {
+  async findManyByUserId(userId: string, page: number, perPage: number) {
     return this.items
-      .filter((checkIn) => checkIn.user_id === userId)
-      .slice((page - 1) * 20, page * 20)
+      .filter((checkIn) => checkIn.userId === userId)
+      .slice((page - 1) * perPage, page * perPage)
   }
 
   async countByUserId(userId: string) {
-    return this.items.filter((checkIn) => checkIn.user_id === userId).length
+    return this.items.filter((checkIn) => checkIn.userId === userId).length
   }
 
   async create(data: CreateCheckInDTO) {
     const checkIn = {
       id: randomUUID(),
-      user_id: data.user_id,
-      gym_id: data.gym_id,
-      validated_at: data.validated_at ? new Date(data.validated_at) : null,
-      created_at: data.created_at ? new Date(data.created_at) : new Date(),
+      userId: data.userId,
+      gymId: data.gymId,
+      validatedAt: data.validatedAt ? new Date(data.validatedAt) : null,
+      createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
     } satisfies CheckIn
 
     this.items.push(checkIn)

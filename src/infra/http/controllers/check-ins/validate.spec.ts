@@ -3,7 +3,6 @@ import { app } from '@/app'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createAndAuthenticateUser } from '@/infra/utils/test/create-and-authenticate-user'
 import { prisma } from '@/infra/database/prisma/prisma'
-import { check } from 'zod'
 
 describe('Validate Check-in (e2e)', () => {
   beforeAll(async () => {

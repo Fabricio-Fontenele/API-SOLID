@@ -1,7 +1,8 @@
 import { Gym } from '@/domain/entities/gym'
 import {
-  findManyNearbyParams,
+  FindManyNearbyParams,
   GymsRepository,
+  SearchManyParams,
 } from '@/application/repositories/gyms-repository'
 import { CreateGymDTO } from '@/application/repositories/dtos/create-gym-dto'
 import { prisma } from '@/infra/database/prisma/prisma'
@@ -37,7 +38,11 @@ export class PrismaGymsRepository implements GymsRepository {
     return gym ? mapPrismaGymToDomain(gym) : null
   }
 
-  async findManyNearby({ latitude, longitude }: findManyNearbyParams) {
+  async findManyNearby({
+    latitude,
+    longitude,
+    maxDistanceInKilometers,
+  }: FindManyNearbyParams) {
     const allGyms = await prisma.gym.findMany()
 
     const nearbyGyms = allGyms.filter((gym: PrismaGym) => {
@@ -48,21 +53,21 @@ export class PrismaGymsRepository implements GymsRepository {
           longitude: gym.longitude.toNumber(),
         },
       )
-      return distance < 10
+      return distance < maxDistanceInKilometers
     })
 
     return nearbyGyms.map(mapPrismaGymToDomain)
   }
 
-  async serachMany(query: string, page: number) {
+  async searchMany({ query, page, perPage }: SearchManyParams) {
     const gyms = await prisma.gym.findMany({
       where: {
         title: {
           contains: query,
         },
       },
-      take: 20,
-      skip: (page - 1) * 20,
+      take: perPage,
+      skip: (page - 1) * perPage,
     })
 
     return gyms.map(mapPrismaGymToDomain)

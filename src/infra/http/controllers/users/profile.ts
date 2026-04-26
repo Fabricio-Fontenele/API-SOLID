@@ -1,4 +1,5 @@
 import { makeGetUserProfileUseCase } from '@/infra/factories/make-get-user-profile-use-case'
+import { UserPresenter } from '@/infra/http/presenters/user-presenter'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function profile(request: FastifyRequest, reply: FastifyReply) {
@@ -9,9 +10,6 @@ export async function profile(request: FastifyRequest, reply: FastifyReply) {
   })
 
   reply.status(200).send({
-    user: {
-      ...user,
-      password_hash: undefined,
-    },
+    user: UserPresenter.toHTTP(user),
   })
 }

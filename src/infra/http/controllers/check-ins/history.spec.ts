@@ -26,7 +26,7 @@ describe('History Check-in (e2e)', () => {
       },
     })
 
-    const checkIns = await prisma.checkIn.createMany({
+    await prisma.checkIn.createMany({
       data: [
         {
           gym_id: gym.id,
@@ -48,12 +48,12 @@ describe('History Check-in (e2e)', () => {
     expect(response.body.checkIns).toHaveLength(2)
     expect(response.body.checkIns).toEqual([
       expect.objectContaining({
-        gym_id: gym.id,
-        user_id: user.id,
+        gymId: gym.id,
+        userId: user.id,
       }),
       expect.objectContaining({
-        gym_id: gym.id,
-        user_id: user.id,
+        gymId: gym.id,
+        userId: user.id,
       }),
     ])
   })

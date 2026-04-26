@@ -1,5 +1,6 @@
 import { Gym } from '@/domain/entities/gym'
 import { GymsRepository } from '@/application/repositories/gyms-repository'
+import { DEFAULT_PAGE_SIZE } from '@/application/constants'
 
 interface SearchGymsUseCaseRequest {
   query: string
@@ -17,7 +18,11 @@ export class SearchGymsUseCase {
     query,
     page,
   }: SearchGymsUseCaseRequest): Promise<SearchGymsUseCaseResponse> {
-    const gyms = await this.gymsRepository.serachMany(query, page)
+    const gyms = await this.gymsRepository.searchMany({
+      query,
+      page,
+      perPage: DEFAULT_PAGE_SIZE,
+    })
 
     return {
       gyms,

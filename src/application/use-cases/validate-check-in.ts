@@ -4,6 +4,7 @@ import { ResourceNotFoundError } from './errors/resource-not-found-error'
 import { CheckInsRepository } from '@/application/repositories/check-ins-repository'
 import dayjs from 'dayjs'
 import { LateCheckInValidationError } from './errors/late-check-in-validation-error'
+import { CHECK_IN_VALIDATION_WINDOW_IN_MINUTES } from '@/application/constants'
 
 interface ValidateCheckInUseCaseRequest {
   checkInId: string
@@ -24,14 +25,17 @@ export class ValidateCheckInUseCase {
     if (!checkIn) throw new ResourceNotFoundError()
 
     const distanceInMinutesFromCheckInCreation = dayjs(new Date()).diff(
-      checkIn.created_at,
+      checkIn.createdAt,
       'minutes',
     )
 
-    if (distanceInMinutesFromCheckInCreation > 20)
+    if (
+      distanceInMinutesFromCheckInCreation >
+      CHECK_IN_VALIDATION_WINDOW_IN_MINUTES
+    )
       throw new LateCheckInValidationError()
 
-    checkIn.validated_at = new Date()
+    checkIn.validatedAt = new Date()
 
     await this.CheckInRepository.save(checkIn)
 

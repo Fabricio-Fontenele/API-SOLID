@@ -1,6 +1,6 @@
 import { Gym } from '@/domain/entities/gym'
 import {
-  findManyNearbyParams,
+  FindManyNearbyParams,
   GymsRepository,
 } from '@/application/repositories/gyms-repository'
 import { CreateGymDTO } from '@/application/repositories/dtos/create-gym-dto'
@@ -20,7 +20,7 @@ export class InMemoryGymsRepository implements GymsRepository {
     return gym
   }
 
-  async findManyNearby(params: findManyNearbyParams) {
+  async findManyNearby(params: FindManyNearbyParams) {
     return this.items.filter((item) => {
       const distance = getDistanceBetweenCoordinates(
         { latitude: params.latitude, longitude: params.longitude },
@@ -30,14 +30,22 @@ export class InMemoryGymsRepository implements GymsRepository {
         },
       )
 
-      return distance < 10
+      return distance < params.maxDistanceInKilometers
     })
   }
 
-  async serachMany(query: string, page: number) {
+  async searchMany({
+    query,
+    page,
+    perPage,
+  }: {
+    query: string
+    page: number
+    perPage: number
+  }) {
     return this.items
       .filter((item) => item.title.includes(query))
-      .slice((page - 1) * 20, page * 20)
+      .slice((page - 1) * perPage, page * perPage)
   }
 
   async create(data: CreateGymDTO) {

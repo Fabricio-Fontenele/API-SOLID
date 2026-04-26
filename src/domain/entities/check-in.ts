@@ -1,7 +1,7 @@
 export interface CheckIn {
   id: string
-  created_at: Date
-  validated_at: Date | null
-  user_id: string
-  gym_id: string
+  createdAt: Date
+  validatedAt: Date | null
+  userId: string
+  gymId: string
 }

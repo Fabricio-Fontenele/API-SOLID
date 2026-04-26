@@ -4,6 +4,24 @@ import { CreateCheckInDTO } from '@/application/repositories/dtos/create-check-i
 import { prisma } from '@/infra/database/prisma/prisma'
 import dayjs from 'dayjs'
 
+type PrismaCheckIn = {
+  id: string
+  created_at: Date
+  validated_at: Date | null
+  user_id: string
+  gym_id: string
+}
+
+function mapPrismaCheckInToDomain(checkIn: PrismaCheckIn): CheckIn {
+  return {
+    id: checkIn.id,
+    createdAt: checkIn.created_at,
+    validatedAt: checkIn.validated_at,
+    userId: checkIn.user_id,
+    gymId: checkIn.gym_id,
+  }
+}
+
 export class PrismaCheckInsRepository implements CheckInsRepository {
   async findById(id: string) {
     const checkIn = await prisma.checkIn.findUnique({
@@ -12,7 +30,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       },
     })
 
-    return checkIn
+    return checkIn ? mapPrismaCheckInToDomain(checkIn) : null
   }
 
   async findByUserIdOnDate(userId: string, date: Date) {
@@ -29,19 +47,19 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       },
     })
 
-    return checkIn
+    return checkIn ? mapPrismaCheckInToDomain(checkIn) : null
   }
 
-  async findManyByUserId(userId: string, page: number) {
+  async findManyByUserId(userId: string, page: number, perPage: number) {
     const checkIns = await prisma.checkIn.findMany({
       where: {
         user_id: userId,
       },
-      take: 20,
-      skip: (page - 1) * 20,
+      take: perPage,
+      skip: (page - 1) * perPage,
     })
 
-    return checkIns
+    return checkIns.map(mapPrismaCheckInToDomain)
   }
 
   async countByUserId(userId: string) {
@@ -56,10 +74,15 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
 
   async create(data: CreateCheckInDTO) {
     const checkIn = await prisma.checkIn.create({
-      data,
+      data: {
+        user_id: data.userId,
+        gym_id: data.gymId,
+        validated_at: data.validatedAt,
+        created_at: data.createdAt,
+      },
     })
 
-    return checkIn
+    return mapPrismaCheckInToDomain(checkIn)
   }
 
   async save(data: CheckIn) {
@@ -67,8 +90,11 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       where: {
         id: data.id,
       },
-      data,
+      data: {
+        validated_at: data.validatedAt,
+      },
     })
-    return checkIn
+
+    return mapPrismaCheckInToDomain(checkIn)
   }
 }
