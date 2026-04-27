@@ -46,7 +46,7 @@ Este projeto é uma aplicação inspirada no GymPass. A API permite que usuário
 
 ```bash
 # Clonar o repositório
-git clone [<url-do-repositorio>](https://github.com/Fabricio-Fontenele/API-SOLID.git)
+git clone https://github.com/Fabricio-Fontenele/API-SOLID.git
 cd api-solid
 
 # Instalar dependências
