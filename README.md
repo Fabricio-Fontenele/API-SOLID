@@ -65,6 +65,9 @@ npx prisma migrate dev
 # Gerar Prisma Client
 npx prisma generate
 
+# Popular dados de demonstração
+npm run seed
+
 # Iniciar servidor de desenvolvimento
 npm run dev
 ```
@@ -95,8 +98,9 @@ JWT_SECRET="sua-chave-secreta-super-segura"
 npm run dev             # Inicia o servidor em modo desenvolvimento
 npm run build           # Compila o projeto para produção
 npm run start           # Inicia o servidor em modo produção
+npm run seed            # Popula dados de demonstração
 
-npm run test            # Executa os testes unitários
+npm run test:unit       # Executa os testes unitários
 npm run test:watch      # Executa os testes em modo watch
 npm run test:e2e        # Executa os testes E2E (end-to-end)
 npm run test:coverage   # Gera relatório de cobertura de testes
@@ -104,6 +108,24 @@ npm run test:ui         # Abre interface UI do Vitest
 
 npm run lint            # Verifica problemas no código
 npm run lint:fix        # Corrige problemas automaticamente
+```
+
+## 🎬 Dados para Demonstração
+
+Depois de rodar `npm run seed`, use estes acessos no Insomnia:
+
+| Perfil | E-mail | Senha |
+|--------|--------|-------|
+| ADMIN | `admin@email.com` | `123456` |
+| MEMBER | `member@email.com` | `123456` |
+
+Dados úteis para testar check-in e busca de academias:
+
+```txt
+Academia próxima: Academia Demo Centro
+Gym ID: 33333333-3333-3333-3333-333333333333
+Latitude: -3.731862
+Longitude: -38.526670
 ```
 
 ## 📝 Requisitos Funcionais (RFs)
